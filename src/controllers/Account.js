@@ -15,7 +15,17 @@ var logout = function(req, res) {
 };
 
 var login = function(req, res) {
+	if(!req.body.username || !req.body.pass) {
+		return res.status(400).json({error: "RAWR! All fields are required"});
+	}
 	
+	Account.AccountModel.authenticate(req.body.username, req.body.pass, function(err, account) {
+		if(err || !account) {
+			return res.status(401).json({error: "Wrong username or password"});
+		}
+		
+		res.json({redirect: '/maker'});
+	});
 };
 
 var signup = function(req, res) {
@@ -44,7 +54,7 @@ var signup = function(req, res) {
 			
 			res.json({redirect: '/maker'});
 		});
-	};
+	});
 };
 
 module.exports.loginPage = loginPage;
